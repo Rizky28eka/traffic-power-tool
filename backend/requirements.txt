@@ -21,3 +21,8 @@ python-dotenv
 pytest
 pytest-asyncio
 ruff
+
+flask
+gunicorn
+SQLAlchemy
+firebase-admin
