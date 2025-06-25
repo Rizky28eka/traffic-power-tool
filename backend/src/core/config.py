@@ -386,6 +386,7 @@ INTERNATIONAL_COUNTRIES = {
     "United States": 25,
 }
 
+
 @dataclass
 class Persona:
     name: str
@@ -402,6 +403,7 @@ class Persona:
     country_preference: Optional[str] = None  # New field for country preference
     language_preference: Optional[str] = None  # New field for language preference
 
+
 @dataclass
 class TrafficConfig:
     project_root: Path
@@ -414,11 +416,27 @@ class TrafficConfig:
     navigation_timeout: int = 60000
     max_retries_per_session: int = 2
     personas: list[Persona] = field(default_factory=list)
-    gender_distribution: dict[str, int] = field(default_factory=lambda: {"Male": 50, "Female": 50})
-    device_distribution: dict[str, int] = field(default_factory=lambda: {"Desktop": 60, "Mobile": 30, "Tablet": 10})
-    country_distribution: dict[str, int] = field(default_factory=lambda: INTERNATIONAL_COUNTRIES)  # Use international countries
-    age_distribution: dict[str, int] = field(default_factory=lambda: {"18-24": 20, "25-34": 30, "35-44": 25, "45-54": 15, "55+": 10})
-    referrer_sources: list[str] = field(default_factory=lambda: DEFAULT_REFERRER_SOURCES)
+    gender_distribution: dict[str, int] = field(
+        default_factory=lambda: {"Male": 50, "Female": 50}
+    )
+    device_distribution: dict[str, int] = field(
+        default_factory=lambda: {"Desktop": 60, "Mobile": 30, "Tablet": 10}
+    )
+    country_distribution: dict[str, int] = field(
+        default_factory=lambda: INTERNATIONAL_COUNTRIES
+    )  # Use international countries
+    age_distribution: dict[str, int] = field(
+        default_factory=lambda: {
+            "18-24": 20,
+            "25-34": 30,
+            "35-44": 25,
+            "45-54": 15,
+            "55+": 10,
+        }
+    )
+    referrer_sources: list[str] = field(
+        default_factory=lambda: DEFAULT_REFERRER_SOURCES
+    )
     session_duration_range: tuple[int, int] = (120, 600)
     bounce_rate_target: float = 0.3
     user_agent_strategy: str = "random"
@@ -430,6 +448,7 @@ class TrafficConfig:
     enable_geolocation_simulation: bool = True  # New field for geolocation simulation
     enable_language_detection: bool = True  # New field for language detection
 
+
 DEFAULT_PERSONAS = [
     Persona(
         name="Methodical Customer",
@@ -438,16 +457,29 @@ DEFAULT_PERSONAS = [
         navigation_depth=(4, 7),
         avg_time_per_page=(40, 75),
         can_fill_forms=True,
-        goal={"type": "fill_form", "target_selector": "form#contact-form, form[name*='contact'], form[class*='contact']"},
+        goal={
+            "type": "fill_form",
+            "target_selector": "form#contact-form, form[name*='contact'], form[class*='contact']",
+        },
     ),
     Persona(
         name="Deep Researcher",
-        goal_keywords={"whitepaper": 12, "case study": 12, "report": 10, "data": 9, "analisa": 8},
+        goal_keywords={
+            "whitepaper": 12,
+            "case study": 12,
+            "report": 10,
+            "data": 9,
+            "analisa": 8,
+        },
         generic_keywords={"blog": 5, "resources": 8, "library": 7, "artikel": 6},
         navigation_depth=(6, 10),
         avg_time_per_page=(50, 90),
         can_fill_forms=False,
-        goal={"type": "find_and_click", "target_text": "download|unduh|get now", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "download|unduh|get now",
+            "case_sensitive": False,
+        },
     ),
     Persona(
         name="Performance Analyst",
@@ -456,7 +488,11 @@ DEFAULT_PERSONAS = [
         navigation_depth=(5, 8),
         avg_time_per_page=(10, 20),
         can_fill_forms=False,
-        goal={"type": "collect_web_vitals", "pages_to_visit": 5, "min_vitals_to_collect": 3},
+        goal={
+            "type": "collect_web_vitals",
+            "pages_to_visit": 5,
+            "min_vitals_to_collect": 3,
+        },
     ),
     Persona(
         name="Quick Browser",
@@ -469,12 +505,22 @@ DEFAULT_PERSONAS = [
     ),
     Persona(
         name="Job Seeker",
-        goal_keywords={"career": 12, "job": 10, "hiring": 9, "lowongan": 11, "vacancies": 9},
+        goal_keywords={
+            "career": 12,
+            "job": 10,
+            "hiring": 9,
+            "lowongan": 11,
+            "vacancies": 9,
+        },
         generic_keywords={"about": 6, "company": 8, "team": 7},
         navigation_depth=(6, 10),
         avg_time_per_page=(45, 90),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "apply|daftar sekarang|lamar", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "apply|daftar sekarang|lamar",
+            "case_sensitive": False,
+        },
     ),
     Persona(
         name="Content Consumer",
@@ -492,31 +538,63 @@ DEFAULT_PERSONAS = [
         navigation_depth=(3, 6),
         avg_time_per_page=(30, 90),
         can_fill_forms=False,
-        goal={"type": "find_and_click", "target_text": "add to cart|beli sekarang", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "add to cart|beli sekarang",
+            "case_sensitive": False,
+        },
     ),
     Persona(
         name="Social Media Marketer",
-        goal_keywords={"share": 10, "social": 9, "twitter": 8, "facebook": 8, "instagram": 8, "like": 7, "follow": 7},
+        goal_keywords={
+            "share": 10,
+            "social": 9,
+            "twitter": 8,
+            "facebook": 8,
+            "instagram": 8,
+            "like": 7,
+            "follow": 7,
+        },
         generic_keywords={"campaign": 6, "ads": 5, "influencer": 5},
         navigation_depth=(3, 6),
         avg_time_per_page=(20, 40),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "share|bagikan|like|follow", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "share|bagikan|like|follow",
+            "case_sensitive": False,
+        },
         gender="Female",
     ),
     Persona(
         name="Mobile Gamer",
-        goal_keywords={"game": 12, "play": 10, "download": 9, "score": 8, "leaderboard": 7},
+        goal_keywords={
+            "game": 12,
+            "play": 10,
+            "download": 9,
+            "score": 8,
+            "leaderboard": 7,
+        },
         generic_keywords={"review": 5, "update": 4, "event": 4},
         navigation_depth=(2, 5),
         avg_time_per_page=(30, 60),
         can_fill_forms=False,
-        goal={"type": "find_and_click", "target_text": "play now|main sekarang|download", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "play now|main sekarang|download",
+            "case_sensitive": False,
+        },
         gender="Male",
     ),
     Persona(
         name="News Reader",
-        goal_keywords={"news": 12, "headline": 10, "breaking": 9, "update": 8, "artikel": 7},
+        goal_keywords={
+            "news": 12,
+            "headline": 10,
+            "breaking": 9,
+            "update": 8,
+            "artikel": 7,
+        },
         generic_keywords={"opini": 5, "kolom": 4, "editorial": 4},
         navigation_depth=(5, 10),
         avg_time_per_page=(40, 90),
@@ -526,311 +604,555 @@ DEFAULT_PERSONAS = [
     ),
     Persona(
         name="Tech Enthusiast",
-        goal_keywords={"gadget": 10, "review": 9, "spec": 8, "launch": 7, "update": 7, "technology": 8},
+        goal_keywords={
+            "gadget": 10,
+            "review": 9,
+            "spec": 8,
+            "launch": 7,
+            "update": 7,
+            "technology": 8,
+        },
         generic_keywords={"forum": 5, "komunitas": 4, "event": 4},
         navigation_depth=(4, 8),
         avg_time_per_page=(30, 70),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "review|spec|forum|komunitas", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "review|spec|forum|komunitas",
+            "case_sensitive": False,
+        },
         gender="Male",
     ),
-    
     # NEW PERSONAS ADDED BELOW
     Persona(
         name="E-commerce Shopper",
-        goal_keywords={"shop": 12, "cart": 10, "checkout": 9, "sale": 8, "discount": 8, "promo": 7},
+        goal_keywords={
+            "shop": 12,
+            "cart": 10,
+            "checkout": 9,
+            "sale": 8,
+            "discount": 8,
+            "promo": 7,
+        },
         generic_keywords={"kategori": 6, "brand": 5, "wishlist": 4},
         navigation_depth=(3, 7),
         avg_time_per_page=(25, 80),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "buy now|beli|add to cart|checkout", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "buy now|beli|add to cart|checkout",
+            "case_sensitive": False,
+        },
         gender="Female",
         scroll_probability=0.9,
         form_interaction_probability=0.4,
     ),
-    
     Persona(
         name="Educational Student",
-        goal_keywords={"course": 12, "tutorial": 11, "learn": 10, "education": 9, "skill": 8, "training": 7},
+        goal_keywords={
+            "course": 12,
+            "tutorial": 11,
+            "learn": 10,
+            "education": 9,
+            "skill": 8,
+            "training": 7,
+        },
         generic_keywords={"certificate": 6, "instructor": 5, "syllabus": 4},
         navigation_depth=(5, 12),
         avg_time_per_page=(60, 180),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "enroll|daftar|register|start course", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "enroll|daftar|register|start course",
+            "case_sensitive": False,
+        },
         gender="Neutral",
         scroll_probability=0.95,
     ),
-    
     Persona(
         name="Health Seeker",
-        goal_keywords={"health": 12, "medical": 10, "doctor": 9, "hospital": 8, "treatment": 7, "appointment": 6},
+        goal_keywords={
+            "health": 12,
+            "medical": 10,
+            "doctor": 9,
+            "hospital": 8,
+            "treatment": 7,
+            "appointment": 6,
+        },
         generic_keywords={"symptoms": 5, "medicine": 4, "clinic": 4},
         navigation_depth=(4, 8),
         avg_time_per_page=(45, 120),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "book appointment|konsultasi|contact doctor", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "book appointment|konsultasi|contact doctor",
+            "case_sensitive": False,
+        },
         gender="Female",
         scroll_probability=0.8,
     ),
-    
     Persona(
         name="Investment Researcher",
-        goal_keywords={"invest": 12, "stock": 11, "finance": 10, "trading": 9, "portfolio": 8, "market": 7},
+        goal_keywords={
+            "invest": 12,
+            "stock": 11,
+            "finance": 10,
+            "trading": 9,
+            "portfolio": 8,
+            "market": 7,
+        },
         generic_keywords={"analysis": 6, "chart": 5, "profit": 5, "risk": 4},
         navigation_depth=(6, 15),
         avg_time_per_page=(90, 300),
         can_fill_forms=False,
-        goal={"type": "collect_web_vitals", "pages_to_visit": 8, "min_vitals_to_collect": 5},
+        goal={
+            "type": "collect_web_vitals",
+            "pages_to_visit": 8,
+            "min_vitals_to_collect": 5,
+        },
         gender="Male",
         scroll_probability=0.9,
     ),
-    
     Persona(
         name="Food Enthusiast",
-        goal_keywords={"recipe": 12, "food": 11, "restaurant": 10, "menu": 9, "cooking": 8, "delivery": 7},
+        goal_keywords={
+            "recipe": 12,
+            "food": 11,
+            "restaurant": 10,
+            "menu": 9,
+            "cooking": 8,
+            "delivery": 7,
+        },
         generic_keywords={"ingredient": 6, "chef": 5, "cuisine": 4},
         navigation_depth=(3, 6),
         avg_time_per_page=(30, 90),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "order now|pesan|reserve|book table", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "order now|pesan|reserve|book table",
+            "case_sensitive": False,
+        },
         gender="Female",
         scroll_probability=0.85,
     ),
-    
     Persona(
         name="Travel Planner",
-        goal_keywords={"travel": 12, "hotel": 11, "flight": 10, "destination": 9, "vacation": 8, "tour": 7},
+        goal_keywords={
+            "travel": 12,
+            "hotel": 11,
+            "flight": 10,
+            "destination": 9,
+            "vacation": 8,
+            "tour": 7,
+        },
         generic_keywords={"itinerary": 6, "guide": 5, "photo": 4, "review": 5},
         navigation_depth=(4, 10),
         avg_time_per_page=(40, 120),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "book now|reserve|pesan tiket", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "book now|reserve|pesan tiket",
+            "case_sensitive": False,
+        },
         gender="Neutral",
         scroll_probability=0.9,
     ),
-    
     Persona(
         name="Real Estate Buyer",
-        goal_keywords={"property": 12, "house": 11, "apartment": 10, "price": 9, "location": 8, "mortgage": 7},
+        goal_keywords={
+            "property": 12,
+            "house": 11,
+            "apartment": 10,
+            "price": 9,
+            "location": 8,
+            "mortgage": 7,
+        },
         generic_keywords={"bedroom": 5, "bathroom": 4, "area": 5, "neighborhood": 4},
         navigation_depth=(5, 12),
         avg_time_per_page=(60, 180),
         can_fill_forms=True,
-        goal={"type": "fill_form", "target_selector": "form#contact-agent, form[name*='inquiry'], form[class*='property']"},
+        goal={
+            "type": "fill_form",
+            "target_selector": "form#contact-agent, form[name*='inquiry'], form[class*='property']",
+        },
         gender="Male",
         scroll_probability=0.95,
     ),
-    
     Persona(
         name="Fitness Tracker",
-        goal_keywords={"fitness": 12, "workout": 11, "gym": 10, "exercise": 9, "diet": 8, "nutrition": 7},
+        goal_keywords={
+            "fitness": 12,
+            "workout": 11,
+            "gym": 10,
+            "exercise": 9,
+            "diet": 8,
+            "nutrition": 7,
+        },
         generic_keywords={"muscle": 5, "cardio": 4, "protein": 4, "calories": 5},
         navigation_depth=(3, 7),
         avg_time_per_page=(25, 75),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "join now|start workout|subscribe", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "join now|start workout|subscribe",
+            "case_sensitive": False,
+        },
         gender="Male",
         scroll_probability=0.8,
     ),
-    
     Persona(
         name="Beauty Consultant",
-        goal_keywords={"beauty": 12, "skincare": 11, "makeup": 10, "cosmetic": 9, "treatment": 8, "salon": 7},
+        goal_keywords={
+            "beauty": 12,
+            "skincare": 11,
+            "makeup": 10,
+            "cosmetic": 9,
+            "treatment": 8,
+            "salon": 7,
+        },
         generic_keywords={"brand": 6, "review": 5, "tutorial": 4, "tips": 5},
         navigation_depth=(4, 8),
         avg_time_per_page=(35, 90),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "buy now|shop|add to cart|book appointment", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "buy now|shop|add to cart|book appointment",
+            "case_sensitive": False,
+        },
         gender="Female",
         scroll_probability=0.9,
     ),
-    
     Persona(
         name="Legal Advisor",
-        goal_keywords={"legal": 12, "lawyer": 11, "law": 10, "consultation": 9, "advice": 8, "court": 7},
+        goal_keywords={
+            "legal": 12,
+            "lawyer": 11,
+            "law": 10,
+            "consultation": 9,
+            "advice": 8,
+            "court": 7,
+        },
         generic_keywords={"case": 6, "document": 5, "contract": 4, "rights": 5},
         navigation_depth=(5, 10),
         avg_time_per_page=(60, 150),
         can_fill_forms=True,
-        goal={"type": "fill_form", "target_selector": "form#consultation, form[name*='legal'], form[class*='contact']"},
+        goal={
+            "type": "fill_form",
+            "target_selector": "form#consultation, form[name*='legal'], form[class*='contact']",
+        },
         gender="Neutral",
         scroll_probability=0.85,
     ),
-    
     Persona(
         name="Automotive Buyer",
-        goal_keywords={"car": 12, "motor": 11, "vehicle": 10, "dealer": 9, "price": 8, "financing": 7},
+        goal_keywords={
+            "car": 12,
+            "motor": 11,
+            "vehicle": 10,
+            "dealer": 9,
+            "price": 8,
+            "financing": 7,
+        },
         generic_keywords={"engine": 5, "fuel": 4, "brand": 5, "model": 6},
         navigation_depth=(4, 9),
         avg_time_per_page=(45, 120),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "test drive|quote|contact dealer", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "test drive|quote|contact dealer",
+            "case_sensitive": False,
+        },
         gender="Male",
         scroll_probability=0.8,
     ),
-    
     Persona(
         name="Entertainment Seeker",
-        goal_keywords={"movie": 12, "music": 11, "concert": 10, "event": 9, "ticket": 8, "show": 7},
+        goal_keywords={
+            "movie": 12,
+            "music": 11,
+            "concert": 10,
+            "event": 9,
+            "ticket": 8,
+            "show": 7,
+        },
         generic_keywords={"artist": 6, "venue": 5, "schedule": 4, "genre": 4},
         navigation_depth=(3, 6),
         avg_time_per_page=(20, 60),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "buy ticket|book now|stream|watch", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "buy ticket|book now|stream|watch",
+            "case_sensitive": False,
+        },
         gender="Neutral",
         scroll_probability=0.75,
     ),
-    
     Persona(
         name="Pet Owner",
-        goal_keywords={"pet": 12, "dog": 10, "cat": 10, "veterinary": 9, "food": 8, "care": 7},
+        goal_keywords={
+            "pet": 12,
+            "dog": 10,
+            "cat": 10,
+            "veterinary": 9,
+            "food": 8,
+            "care": 7,
+        },
         generic_keywords={"breed": 5, "health": 6, "training": 4, "toy": 4},
         navigation_depth=(3, 7),
         avg_time_per_page=(30, 80),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "shop|order|appointment|consult", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "shop|order|appointment|consult",
+            "case_sensitive": False,
+        },
         gender="Female",
         scroll_probability=0.85,
     ),
-    
     Persona(
         name="Financial Advisor",
-        goal_keywords={"insurance": 12, "loan": 11, "credit": 10, "bank": 9, "savings": 8, "budget": 7},
+        goal_keywords={
+            "insurance": 12,
+            "loan": 11,
+            "credit": 10,
+            "bank": 9,
+            "savings": 8,
+            "budget": 7,
+        },
         generic_keywords={"rate": 6, "calculator": 5, "plan": 5, "advisor": 4},
         navigation_depth=(5, 12),
         avg_time_per_page=(50, 140),
         can_fill_forms=True,
-        goal={"type": "fill_form", "target_selector": "form#application, form[name*='loan'], form[class*='finance']"},
+        goal={
+            "type": "fill_form",
+            "target_selector": "form#application, form[name*='loan'], form[class*='finance']",
+        },
         gender="Male",
         scroll_probability=0.9,
     ),
-    
     Persona(
         name="Home Improvement",
-        goal_keywords={"renovation": 12, "contractor": 11, "design": 10, "furniture": 9, "interior": 8, "decor": 7},
+        goal_keywords={
+            "renovation": 12,
+            "contractor": 11,
+            "design": 10,
+            "furniture": 9,
+            "interior": 8,
+            "decor": 7,
+        },
         generic_keywords={"material": 6, "budget": 5, "style": 4, "room": 5},
         navigation_depth=(4, 8),
         avg_time_per_page=(40, 100),
         can_fill_forms=True,
-        goal={"type": "find_and_click", "target_text": "quote|estimate|contact|buy", "case_sensitive": False},
+        goal={
+            "type": "find_and_click",
+            "target_text": "quote|estimate|contact|buy",
+            "case_sensitive": False,
+        },
         gender="Neutral",
         scroll_probability=0.9,
     ),
 ]
 
+
 def generate_random_personas(count: int = 5, countries: list = None) -> list[Persona]:
     """
     Generate random personas with international characteristics.
-    
+
     Args:
         count: Number of random personas to generate
         countries: List of countries to choose from (if None, uses all international countries)
-    
+
     Returns:
         List of randomly generated Persona objects
     """
     if countries is None:
         countries = list(INTERNATIONAL_COUNTRIES.keys())
-    
+
     # Define persona templates for different types
     persona_templates = [
         {
-            "name_prefixes": ["Global", "International", "Worldwide", "Cross-border", "Multi-national"],
-            "name_suffixes": ["Explorer", "Traveler", "Researcher", "Analyst", "Consumer", "Professional"],
+            "name_prefixes": [
+                "Global",
+                "International",
+                "Worldwide",
+                "Cross-border",
+                "Multi-national",
+            ],
+            "name_suffixes": [
+                "Explorer",
+                "Traveler",
+                "Researcher",
+                "Analyst",
+                "Consumer",
+                "Professional",
+            ],
             "goal_keywords": {
-                "global": 10, "international": 9, "worldwide": 8, "cross-border": 7,
-                "multi-national": 6, "overseas": 5, "foreign": 4, "export": 3
+                "global": 10,
+                "international": 9,
+                "worldwide": 8,
+                "cross-border": 7,
+                "multi-national": 6,
+                "overseas": 5,
+                "foreign": 4,
+                "export": 3,
             },
             "generic_keywords": {
-                "services": 6, "solutions": 5, "partnership": 4, "network": 3
+                "services": 6,
+                "solutions": 5,
+                "partnership": 4,
+                "network": 3,
             },
             "navigation_depth": (4, 8),
             "avg_time_per_page": (30, 90),
             "can_fill_forms": True,
             "scroll_probability": 0.9,
-            "form_interaction_probability": 0.4
+            "form_interaction_probability": 0.4,
         },
         {
             "name_prefixes": ["Digital", "Online", "Virtual", "Remote", "Cloud"],
-            "name_suffixes": ["Nomad", "Worker", "Entrepreneur", "Consultant", "Freelancer"],
+            "name_suffixes": [
+                "Nomad",
+                "Worker",
+                "Entrepreneur",
+                "Consultant",
+                "Freelancer",
+            ],
             "goal_keywords": {
-                "remote": 10, "digital": 9, "online": 8, "virtual": 7,
-                "cloud": 6, "telecommute": 5, "work-from-home": 4
+                "remote": 10,
+                "digital": 9,
+                "online": 8,
+                "virtual": 7,
+                "cloud": 6,
+                "telecommute": 5,
+                "work-from-home": 4,
             },
             "generic_keywords": {
-                "tools": 6, "platform": 5, "software": 4, "technology": 3
+                "tools": 6,
+                "platform": 5,
+                "software": 4,
+                "technology": 3,
             },
             "navigation_depth": (3, 7),
             "avg_time_per_page": (20, 60),
             "can_fill_forms": True,
             "scroll_probability": 0.85,
-            "form_interaction_probability": 0.5
+            "form_interaction_probability": 0.5,
         },
         {
             "name_prefixes": ["Cultural", "Local", "Regional", "Native", "Indigenous"],
-            "name_suffixes": ["Enthusiast", "Collector", "Researcher", "Explorer", "Admirer"],
+            "name_suffixes": [
+                "Enthusiast",
+                "Collector",
+                "Researcher",
+                "Explorer",
+                "Admirer",
+            ],
             "goal_keywords": {
-                "culture": 10, "local": 9, "traditional": 8, "heritage": 7,
-                "custom": 6, "artisan": 5, "handmade": 4
+                "culture": 10,
+                "local": 9,
+                "traditional": 8,
+                "heritage": 7,
+                "custom": 6,
+                "artisan": 5,
+                "handmade": 4,
             },
-            "generic_keywords": {
-                "art": 6, "craft": 5, "tradition": 4, "history": 3
-            },
+            "generic_keywords": {"art": 6, "craft": 5, "tradition": 4, "history": 3},
             "navigation_depth": (5, 10),
             "avg_time_per_page": (40, 120),
             "can_fill_forms": False,
             "scroll_probability": 0.95,
-            "form_interaction_probability": 0.2
+            "form_interaction_probability": 0.2,
         },
         {
-            "name_prefixes": ["Tech", "Innovation", "Startup", "Entrepreneurial", "Disruptive"],
-            "name_suffixes": ["Innovator", "Pioneer", "Visionary", "Creator", "Developer"],
+            "name_prefixes": [
+                "Tech",
+                "Innovation",
+                "Startup",
+                "Entrepreneurial",
+                "Disruptive",
+            ],
+            "name_suffixes": [
+                "Innovator",
+                "Pioneer",
+                "Visionary",
+                "Creator",
+                "Developer",
+            ],
             "goal_keywords": {
-                "innovation": 10, "startup": 9, "technology": 8, "disruptive": 7,
-                "pioneering": 6, "cutting-edge": 5, "next-gen": 4
+                "innovation": 10,
+                "startup": 9,
+                "technology": 8,
+                "disruptive": 7,
+                "pioneering": 6,
+                "cutting-edge": 5,
+                "next-gen": 4,
             },
             "generic_keywords": {
-                "funding": 6, "investment": 5, "accelerator": 4, "incubator": 3
+                "funding": 6,
+                "investment": 5,
+                "accelerator": 4,
+                "incubator": 3,
             },
             "navigation_depth": (6, 12),
             "avg_time_per_page": (50, 150),
             "can_fill_forms": True,
             "scroll_probability": 0.9,
-            "form_interaction_probability": 0.6
+            "form_interaction_probability": 0.6,
         },
         {
-            "name_prefixes": ["Eco", "Green", "Sustainable", "Environmental", "Climate"],
-            "name_suffixes": ["Activist", "Advocate", "Conscious", "Responsible", "Aware"],
+            "name_prefixes": [
+                "Eco",
+                "Green",
+                "Sustainable",
+                "Environmental",
+                "Climate",
+            ],
+            "name_suffixes": [
+                "Activist",
+                "Advocate",
+                "Conscious",
+                "Responsible",
+                "Aware",
+            ],
             "goal_keywords": {
-                "sustainable": 10, "eco-friendly": 9, "green": 8, "environmental": 7,
-                "climate": 6, "renewable": 5, "organic": 4
+                "sustainable": 10,
+                "eco-friendly": 9,
+                "green": 8,
+                "environmental": 7,
+                "climate": 6,
+                "renewable": 5,
+                "organic": 4,
             },
             "generic_keywords": {
-                "certification": 6, "impact": 5, "responsibility": 4, "future": 3
+                "certification": 6,
+                "impact": 5,
+                "responsibility": 4,
+                "future": 3,
             },
             "navigation_depth": (4, 9),
             "avg_time_per_page": (35, 100),
             "can_fill_forms": True,
             "scroll_probability": 0.88,
-            "form_interaction_probability": 0.45
-        }
+            "form_interaction_probability": 0.45,
+        },
     ]
-    
+
     random_personas = []
-    
+
     for i in range(count):
         template = random.choice(persona_templates)
         prefix = random.choice(template["name_prefixes"])
         suffix = random.choice(template["name_suffixes"])
         name = f"{prefix} {suffix}"
-        
+
         # Randomly select a country
         country = random.choice(countries)
-        
+
         # Generate language preference based on country
         language_map = {
             "United States": "en-US",
-            "United Kingdom": "en-GB", 
+            "United Kingdom": "en-GB",
             "Indonesia": "id-ID",
             "China": "zh-CN",
             "Japan": "ja-JP",
@@ -1016,16 +1338,16 @@ def generate_random_personas(count: int = 5, countries: list = None) -> list[Per
             "Turkmenistan": "tk-TM",
             "Azerbaijan": "az-AZ",
             "Georgia": "ka-GE",
-            "Armenia": "hy-AM"
+            "Armenia": "hy-AM",
         }
-        
+
         language_preference = language_map.get(country, "en-US")
-        
+
         # Randomize some parameters
         gender = random.choice(["Male", "Female", "Neutral"])
         age_min = random.randint(18, 45)
         age_max = random.randint(age_min + 5, 75)
-        
+
         persona = Persona(
             name=name,
             goal_keywords=template["goal_keywords"].copy(),
@@ -1038,9 +1360,9 @@ def generate_random_personas(count: int = 5, countries: list = None) -> list[Per
             scroll_probability=template["scroll_probability"],
             form_interaction_probability=template["form_interaction_probability"],
             country_preference=country,
-            language_preference=language_preference
+            language_preference=language_preference,
         )
-        
+
         random_personas.append(persona)
-    
+
     return random_personas
