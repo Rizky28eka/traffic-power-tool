@@ -1,28 +1,60 @@
-# File: requirements.txt
+# Core Application Libraries
+streamlit==1.39.0
+pandas==2.2.3
+openpyxl==3.1.5
+playwright==1.48.0
+Faker==30.8.2
+plotly==5.24.1
 
-# --- Core Application Libraries ---
-streamlit
-pandas
-openpyxl
-playwright
-Faker
-plotly
+# Web Framework & API
+flask==3.1.0
+flask-cors==5.0.0
+flask-socketio==5.4.1
+gunicorn==23.0.0
 
-# --- Web & Network Utilities ---
-httpx[http2]
+# Database & Caching
+SQLAlchemy==2.0.36
+psycopg2-binary==2.9.10
+redis==5.2.0
 
-# --- Data & Analytics Integration ---
-google-analytics-data
+# HTTP & Network
+httpx[http2]==0.27.2
+requests==2.32.3
 
-# --- Configuration & Security ---
-python-dotenv
+# Data Processing & Analytics
+numpy==2.1.3
+scipy==1.14.1
+scikit-learn==1.5.2
 
-# --- Development & Testing Tools ---
-pytest
-pytest-asyncio
-ruff
+# Google Analytics Integration
+google-analytics-data==0.18.12
 
-flask
-gunicorn
-SQLAlchemy
-firebase-admin
+# Configuration & Security
+python-dotenv==1.0.1
+pydantic==2.10.2
+cryptography==43.0.3
+
+# Development & Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+ruff==0.8.4
+
+# Monitoring & Logging
+prometheus-client==0.21.0
+structlog==24.4.0
+
+# Task Queue (Optional)
+celery==5.4.0
+
+# File Processing
+Pillow==11.0.0
+python-multipart==0.0.12
+
+# Date & Time
+python-dateutil==2.9.0.post0
+pytz==2024.2
+
+# Utilities
+click==8.1.7
+tqdm==4.67.1
+colorama==0.4.6
