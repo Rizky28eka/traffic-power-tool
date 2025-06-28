@@ -42,7 +42,6 @@
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.1",
-    "react-beautiful-dnd": "^13.1.1",
     "react-window": "^1.8.8",
     "react-intersection-observer": "^9.13.1"
   },
@@ -51,13 +50,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "tailwindcss": "^3.4.7",
+    "postcss": "^8.4.35",
+    "autoprefixer": "^10.4.16",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "@eslint/eslintrc": "^3",
     "@types/socket.io-client": "^3.0.0",
-    "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-window": "^1.8.8",
     "@types/react-datepicker": "^7.0.0"
   }
