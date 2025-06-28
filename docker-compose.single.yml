@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  traffic-power-tool:
+    build: .
+    container_name: traffic-power-tool-all-in-one
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+      - PYTHONPATH=/app
+      - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=traffic_power_tool
+      - POSTGRES_USER=traffic_user
+      - POSTGRES_PASSWORD=traffic_password
+      - REDIS_HOST=localhost
+      - REDIS_PORT=6379
+      - SECRET_KEY=your-secret-key-here-min-32-characters
+    volumes:
+      - ./data:/app/data
+      - ./logs:/var/log/supervisor
+      - ./config:/app/config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+# Optional: Create named volumes for data persistence
+volumes:
+  app_data:
+    driver: local
