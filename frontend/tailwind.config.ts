@@ -6,9 +6,14 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        // Light mode colors
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',
@@ -74,6 +79,20 @@ const config: Config = {
           900: '#7f1d1d',
           950: '#450a0a',
         },
+        // Dark mode specific colors
+        dark: {
+          background: '#0a0a0a',
+          foreground: '#ededed',
+          card: '#1a1a1a',
+          'card-foreground': '#ededed',
+          border: '#262626',
+          input: '#262626',
+          ring: '#3b82f6',
+          muted: '#262626',
+          'muted-foreground': '#a1a1aa',
+          accent: '#262626',
+          'accent-foreground': '#ededed',
+        },
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
@@ -103,6 +122,9 @@ const config: Config = {
         'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
         'medium': '0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
         'strong': '0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 4px 25px -5px rgba(0, 0, 0, 0.1)',
+        'dark-soft': '0 2px 15px -3px rgba(0, 0, 0, 0.3), 0 10px 20px -2px rgba(0, 0, 0, 0.2)',
+        'dark-medium': '0 4px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3)',
+        'dark-strong': '0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 4px 25px -5px rgba(0, 0, 0, 0.4)',
       },
     },
   },

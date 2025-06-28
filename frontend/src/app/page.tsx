@@ -115,10 +115,10 @@ const Dashboard: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold text-secondary-900 mb-4">
+        <h1 className="text-4xl font-bold text-secondary-900 dark:text-secondary-100 mb-4 theme-transition">
           Welcome to Traffic Power Tool
         </h1>
-        <p className="text-xl text-secondary-600 max-w-3xl mx-auto">
+        <p className="text-xl text-secondary-600 dark:text-secondary-400 max-w-3xl mx-auto theme-transition">
           Enterprise-grade website traffic simulation with advanced international demographics, 
           behavioral personas, and comprehensive analytics.
         </p>
@@ -154,22 +154,22 @@ const Dashboard: React.FC = () => {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-secondary-900">{stats.completed}</div>
-                  <div className="text-sm text-secondary-600">Completed</div>
+                  <div className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 theme-transition">{stats.completed}</div>
+                  <div className="text-sm text-secondary-600 dark:text-secondary-400 theme-transition">Completed</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-success-600">{stats.successful}</div>
-                  <div className="text-sm text-secondary-600">Successful</div>
+                  <div className="text-sm text-secondary-600 dark:text-secondary-400 theme-transition">Successful</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-error-600">{stats.failed}</div>
-                  <div className="text-sm text-secondary-600">Failed</div>
+                  <div className="text-sm text-secondary-600 dark:text-secondary-400 theme-transition">Failed</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary-600">
                     {stats.success_rate ? `${stats.success_rate.toFixed(1)}%` : '0%'}
                   </div>
-                  <div className="text-sm text-secondary-600">Success Rate</div>
+                  <div className="text-sm text-secondary-600 dark:text-secondary-400 theme-transition">Success Rate</div>
                 </div>
               </div>
               <div className="mt-4 flex justify-center">
@@ -226,28 +226,28 @@ const Dashboard: React.FC = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-secondary-600">{stat.title}</p>
-                    <p className="text-2xl font-bold text-secondary-900">{stat.value}</p>
+                    <p className="text-sm font-medium text-secondary-600 dark:text-secondary-400 theme-transition">{stat.title}</p>
+                    <p className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 theme-transition">{stat.value}</p>
                   </div>
                   <div className={`p-3 rounded-lg ${
-                    index === 0 ? 'bg-primary-100' :
-                    index === 1 ? 'bg-success-100' :
-                    index === 2 ? 'bg-warning-100' : 'bg-secondary-100'
-                  }`}>
+                    index === 0 ? 'bg-primary-100 dark:bg-primary-900/50' :
+                    index === 1 ? 'bg-success-100 dark:bg-success-900/50' :
+                    index === 2 ? 'bg-warning-100 dark:bg-warning-900/50' : 'bg-secondary-100 dark:bg-secondary-800'
+                  } theme-transition`}>
                     <stat.icon className={`w-6 h-6 ${
-                      index === 0 ? 'text-primary-600' :
-                      index === 1 ? 'text-success-600' :
-                      index === 2 ? 'text-warning-600' : 'text-secondary-600'
-                    }`} />
+                      index === 0 ? 'text-primary-600 dark:text-primary-400' :
+                      index === 1 ? 'text-success-600 dark:text-success-400' :
+                      index === 2 ? 'text-warning-600 dark:text-warning-400' : 'text-secondary-600 dark:text-secondary-400'
+                    } theme-transition`} />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center">
                   <span className={`text-sm font-medium ${
-                    stat.positive ? 'text-success-600' : 'text-error-600'
-                  }`}>
+                    stat.positive ? 'text-success-600 dark:text-success-400' : 'text-error-600 dark:text-error-400'
+                  } theme-transition`}>
                     {stat.change}
                   </span>
-                  <span className="text-sm text-secondary-600 ml-2">from last month</span>
+                  <span className="text-sm text-secondary-600 dark:text-secondary-400 ml-2 theme-transition">from last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -257,7 +257,7 @@ const Dashboard: React.FC = () => {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-2xl font-bold text-secondary-900 mb-6">Quick Actions</h2>
+        <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-6 theme-transition">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {quickActions.map((action, index) => (
             <motion.div
@@ -267,7 +267,7 @@ const Dashboard: React.FC = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Link href={action.href}>
-                <Card className="h-full hover:shadow-medium transition-all duration-200 cursor-pointer group">
+                <Card className="h-full hover:shadow-medium dark:hover:shadow-dark-medium transition-all duration-200 cursor-pointer group theme-transition">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className={`p-3 rounded-lg ${action.color}`}>
@@ -277,13 +277,13 @@ const Dashboard: React.FC = () => {
                         {action.badge}
                       </Badge>
                     </div>
-                    <h3 className="text-lg font-semibold text-secondary-900 mb-2 group-hover:text-primary-600 transition-colors">
+                    <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors theme-transition">
                       {action.title}
                     </h3>
-                    <p className="text-secondary-600 text-sm">
+                    <p className="text-secondary-600 dark:text-secondary-400 text-sm theme-transition">
                       {action.description}
                     </p>
-                    <div className="mt-4 flex items-center text-primary-600 text-sm font-medium group-hover:text-primary-700 transition-colors">
+                    <div className="mt-4 flex items-center text-primary-600 dark:text-primary-400 text-sm font-medium group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors theme-transition">
                       Get Started
                       <ArrowRightIcon className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -297,7 +297,7 @@ const Dashboard: React.FC = () => {
 
       {/* Features Overview */}
       <div>
-        <h2 className="text-2xl font-bold text-secondary-900 mb-6">Platform Features</h2>
+        <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-100 mb-6 theme-transition">Platform Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {features.map((feature, index) => (
             <motion.div
@@ -309,19 +309,19 @@ const Dashboard: React.FC = () => {
               <Card variant="elevated" className="h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="p-3 bg-primary-100 rounded-lg">
-                      <feature.icon className="w-6 h-6 text-primary-600" />
+                    <div className="p-3 bg-primary-100 dark:bg-primary-900/50 rounded-lg theme-transition">
+                      <feature.icon className="w-6 h-6 text-primary-600 dark:text-primary-400 theme-transition" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-semibold text-secondary-900">
+                        <h3 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100 theme-transition">
                           {feature.title}
                         </h3>
                         <Badge variant="primary" size="sm">
                           {feature.stats}
                         </Badge>
                       </div>
-                      <p className="text-secondary-600">
+                      <p className="text-secondary-600 dark:text-secondary-400 theme-transition">
                         {feature.description}
                       </p>
                     </div>
@@ -339,12 +339,12 @@ const Dashboard: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <Card variant="elevated" className="bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
+        <Card variant="elevated" className="bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-950/50 dark:to-primary-900/50 border-primary-200 dark:border-primary-800 theme-transition">
           <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold text-primary-900 mb-4">
+            <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-100 mb-4 theme-transition">
               Ready to Start Your First Simulation?
             </h2>
-            <p className="text-primary-700 mb-6 max-w-2xl mx-auto">
+            <p className="text-primary-700 dark:text-primary-300 mb-6 max-w-2xl mx-auto theme-transition">
               Configure your traffic simulation with our intuitive interface. Choose from 200+ countries, 
               20+ personas, and multiple device types to create realistic user behavior patterns.
             </p>

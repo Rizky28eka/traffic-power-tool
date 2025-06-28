@@ -9,9 +9,9 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', padding = 'md', children, ...props }, ref) => {
     const variants = {
-      default: 'bg-white border border-secondary-200',
-      elevated: 'bg-white shadow-soft border border-secondary-100',
-      outlined: 'bg-white border-2 border-secondary-200',
+      default: 'bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700',
+      elevated: 'bg-white dark:bg-secondary-900 shadow-soft dark:shadow-dark-soft border border-secondary-100 dark:border-secondary-800',
+      outlined: 'bg-white dark:bg-secondary-900 border-2 border-secondary-200 dark:border-secondary-700',
     };
 
     const paddings = {
@@ -25,7 +25,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'rounded-xl',
+          'rounded-xl theme-transition',
           variants[variant],
           paddings[padding],
           className
@@ -60,7 +60,10 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, CardTitleProps>(
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn('text-lg font-semibold leading-none tracking-tight text-secondary-900', className)}
+      className={cn(
+        'text-lg font-semibold leading-none tracking-tight text-secondary-900 dark:text-secondary-100 theme-transition',
+        className
+      )}
       {...props}
     />
   )
@@ -74,7 +77,10 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionPr
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn('text-sm text-secondary-600', className)}
+      className={cn(
+        'text-sm text-secondary-600 dark:text-secondary-400 theme-transition',
+        className
+      )}
       {...props}
     />
   )

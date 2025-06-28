@@ -49,7 +49,7 @@ const Modal: React.FC<ModalProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/25 dark:bg-black/50 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -65,7 +65,7 @@ const Modal: React.FC<ModalProps> = ({
             >
               <Dialog.Panel 
                 className={cn(
-                  'w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all',
+                  'w-full transform overflow-hidden rounded-2xl bg-white dark:bg-secondary-900 p-6 text-left align-middle shadow-xl dark:shadow-dark-strong transition-all theme-transition',
                   sizes[size]
                 )}
               >
@@ -75,13 +75,13 @@ const Modal: React.FC<ModalProps> = ({
                       {title && (
                         <Dialog.Title
                           as="h3"
-                          className="text-lg font-medium leading-6 text-secondary-900"
+                          className="text-lg font-medium leading-6 text-secondary-900 dark:text-secondary-100 theme-transition"
                         >
                           {title}
                         </Dialog.Title>
                       )}
                       {description && (
-                        <p className="mt-1 text-sm text-secondary-600">
+                        <p className="mt-1 text-sm text-secondary-600 dark:text-secondary-400 theme-transition">
                           {description}
                         </p>
                       )}
