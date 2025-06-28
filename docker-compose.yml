@@ -1,43 +1,43 @@
 version: '3.8'
 
 services:
-  traffic-power-tool:
-    build: .
-    container_name: traffic-power-tool
+  backend:
+    build: ./backend
+    container_name: traffic-backend
     ports:
       - "8000:8000"
     environment:
-      - NODE_ENV=production
-      - PYTHONPATH=/app
-      - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=traffic_power_tool
+      - POSTGRES_USER=traffic_user
+      - POSTGRES_PASSWORD=traffic_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SECRET_KEY=your-secret-key-here-minimum-32-characters
+    depends_on:
+      - postgres
+      - redis
     volumes:
       - ./data:/app/output
       - ./logs:/app/logs
-      - ./config:/app/config
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     networks:
       - traffic-network
+    restart: unless-stopped
 
-  # Redis for caching and session management
-  redis:
-    image: redis:7-alpine
-    container_name: traffic-redis
+  frontend:
+    build: ./frontend
+    container_name: traffic-frontend
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    restart: unless-stopped
-    command: redis-server --appendonly yes
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
     networks:
       - traffic-network
+    restart: unless-stopped
 
-  # PostgreSQL for data persistence
   postgres:
     image: postgres:15-alpine
     container_name: traffic-postgres
@@ -50,13 +50,25 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    restart: unless-stopped
     networks:
       - traffic-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: traffic-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - traffic-network
+    restart: unless-stopped
 
 volumes:
-  redis_data:
   postgres_data:
+  redis_data:
 
 networks:
   traffic_network:

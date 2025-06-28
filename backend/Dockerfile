@@ -1,26 +1,47 @@
-# Gunakan base image Python yang umum
-FROM python:3.10-slim
+# Multi-stage build for Python backend
+FROM python:3.11-slim as base
 
-# Atur direktori kerja di dalam container
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    wget \
+    unzip \
+    xvfb \
+    netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /app
 
-# Salin file requirements terlebih dahulu untuk caching
+# Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install dependensi Python
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# --- INI BAGIAN PENTING ---
-# Jalankan instalasi Playwright beserta dependensinya sebagai langkah build terpisah
-# Ini akan memakan waktu pada build pertama, tetapi akan di-cache untuk build selanjutnya
-RUN playwright install --with-deps
+# Install Playwright and browsers
+RUN playwright install --with-deps chromium
 
-# Salin sisa kode aplikasi Anda ke dalam container
+# Copy application code
 COPY . .
 
-# Beri tahu Railway port mana yang akan diekspos oleh aplikasi
+# Create directories
+RUN mkdir -p /app/output/profiles /app/logs
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose port
 EXPOSE 8000
 
-# Perintah untuk menjalankan aplikasi Streamlit saat container dimulai
-# Railway akan secara otomatis menggunakan $PORT yang benar
-CMD streamlit run app.py --server.port $PORT --server.headless true
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Start application
+CMD ["python", "app.py"]
