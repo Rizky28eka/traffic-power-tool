@@ -1,8 +1,8 @@
-version: '3.8'
-
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: traffic-backend
     ports:
       - "8000:8000"
@@ -14,44 +14,55 @@ services:
       - POSTGRES_PASSWORD=traffic_password
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - SECRET_KEY=your-secret-key-here-minimum-32-characters
+      - SECRET_KEY=a-secure-and-random-secret-key-for-production
+      - APP_ENV=production
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - ./data:/app/output
       - ./logs:/app/logs
     networks:
-      - traffic-network
+      - traffic_network
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: traffic-frontend
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - BACKEND_URL=http://backend:8000
     depends_on:
       - backend
     networks:
-      - traffic-network
+      - traffic_network
     restart: unless-stopped
 
   postgres:
     image: postgres:15-alpine
     container_name: traffic-postgres
     environment:
-      POSTGRES_DB: traffic_power_tool
-      POSTGRES_USER: traffic_user
-      POSTGRES_PASSWORD: traffic_password
+      - POSTGRES_DB=traffic_power_tool
+      - POSTGRES_USER=traffic_user
+      - POSTGRES_PASSWORD=traffic_password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./supabase/migrations:/docker-entrypoint-initdb.d
     networks:
-      - traffic-network
+      - traffic_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U traffic_user -d traffic_power_tool"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   redis:
@@ -63,7 +74,12 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
     networks:
-      - traffic-network
+      - traffic_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
 volumes:
