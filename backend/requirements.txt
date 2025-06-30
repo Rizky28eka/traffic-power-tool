@@ -1,26 +1,26 @@
 # Core Application
-flask==3.1.0
-flask-cors==5.0.0
-flask-socketio==5.4.1
-gunicorn==23.0.0
+flask
+flask-cors
+flask-socketio
+gunicorn
 
 # Database & Caching
-psycopg2-binary==2.9.10
-redis==5.2.0
+mysql-connector-python
+redis
 
 # Browser Automation
-playwright==1.48.0
+playwright
 
 # Data Processing
-pandas==2.2.3
-numpy==2.1.3
-openpyxl==3.1.5
+pandas
+numpy
+openpyxl
 
 # Utilities
-faker==30.8.2
-python-dotenv==1.0.1
-requests==2.32.3
+faker
+python-dotenv
+requests
 
 # Development
-pytest==8.3.4
-pytest-asyncio==0.24.0
+pytest
+pytest-asyncio

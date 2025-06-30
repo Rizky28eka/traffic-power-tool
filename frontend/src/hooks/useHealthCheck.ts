@@ -5,6 +5,7 @@ interface HealthStatus {
   status: string;
   timestamp: string;
   services: {
+    mysql: string;
     redis: string;
     postgres: string;
   };
@@ -26,7 +27,7 @@ export function useHealthCheck(): UseHealthCheckResult {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/health');
+      const response = await fetch('/api/health');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

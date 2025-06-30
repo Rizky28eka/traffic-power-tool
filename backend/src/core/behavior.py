@@ -9,7 +9,7 @@ from urllib.parse import urljoin, urlparse
 from abc import ABC, abstractmethod
 
 from faker import Faker
-from playwright.async_api import ElementHandle, Locator, Page, PlaywrightError, TimeoutError as PlaywrightTimeoutError
+from playwright.async_api import ElementHandle, Locator, Page, TimeoutError as PlaywrightTimeoutError
 
 from .config import Persona, TrafficConfig
 from .fingerprint import BrowserFingerprint
@@ -46,7 +46,7 @@ class Mission(ABC):
             await self.page.wait_for_load_state("networkidle", timeout=self.simulator.config.navigation_timeout)
             # await self.simulator._capture_ga4_event(self.page, self.profile_id, self.ga4_events, "page_view")
             return True
-        except (PlaywrightTimeoutError, PlaywrightError) as e:
+        except PlaywrightTimeoutError as e:
             logger.warning(f"Failed to navigate to next page during mission: {e}")
             return False
 
@@ -188,7 +188,7 @@ class IntelligentBehaviorSimulator:
             
             logger.debug("Submit button not found or not visible on the form.")
             return False
-        except (PlaywrightTimeoutError, PlaywrightError) as e:
+        except PlaywrightTimeoutError as e:
             logger.warning(f"Failed to interact with form: {e}", exc_info=True)
             return False
 
@@ -210,7 +210,7 @@ class IntelligentBehaviorSimulator:
                 logger.info(f"Web vitals collected: TTFB={vitals['ttfb']:.0f}ms, FCP={vitals['fcp']:.0f}ms")
                 vitals["url"] = page.url
                 return vitals
-        except PlaywrightError as e:
+        except PlaywrightTimeoutError as e:
             logger.warning(f"Could not collect web vitals: {e}")
         return {}
 
@@ -277,7 +277,7 @@ class IntelligentBehaviorSimulator:
                 await asyncio.sleep(uniform(0.2, 0.7))
                 await chosen_link.click(delay=self.delays["click_delay"])
                 await page.wait_for_load_state("networkidle", timeout=self.config.navigation_timeout)
-            except (PlaywrightTimeoutError, PlaywrightError) as e:
+            except PlaywrightTimeoutError as e:
                 logger.warning(f"Failed to click link or load page: {e}. Stopping standard navigation.")
                 break
         logger.info("Standard navigation finished.")

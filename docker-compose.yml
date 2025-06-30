@@ -1,23 +1,49 @@
+version: "3.8"
+
 services:
+  nginx:
+    image: nginx:latest
+    container_name: traffic-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - traffic_network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: traffic-frontend
+    environment:
+      - NODE_ENV=production
+      - BACKEND_URL=http://backend:8000
+    networks:
+      - traffic_network
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: traffic-backend
-    ports:
-      - "8000:8000"
     environment:
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=traffic_power_tool
-      - POSTGRES_USER=traffic_user
-      - POSTGRES_PASSWORD=traffic_password
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DB=traffic_power_tool
+      - MYSQL_USER=traffic_user
+      - MYSQL_PASSWORD=traffic_password
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - SECRET_KEY=a-secure-and-random-secret-key-for-production
       - APP_ENV=production
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -28,38 +54,21 @@ services:
       - traffic_network
     restart: unless-stopped
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: traffic-frontend
-    ports:
-      - "3000:3000"
+  mysql:
+    image: mysql:8.0
+    container_name: traffic-mysql
     environment:
-      - NODE_ENV=production
-      - BACKEND_URL=http://backend:8000
-    depends_on:
-      - backend
-    networks:
-      - traffic_network
-    restart: unless-stopped
-
-  postgres:
-    image: postgres:15-alpine
-    container_name: traffic-postgres
-    environment:
-      - POSTGRES_DB=traffic_power_tool
-      - POSTGRES_USER=traffic_user
-      - POSTGRES_PASSWORD=traffic_password
-    ports:
-      - "5432:5432"
+      - MYSQL_DATABASE=traffic_power_tool
+      - MYSQL_USER=traffic_user
+      - MYSQL_PASSWORD=traffic_password
+      - MYSQL_ROOT_PASSWORD=root_password
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./supabase/migrations:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+      - ./mysql/migrations:/docker-entrypoint-initdb.d
     networks:
       - traffic_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U traffic_user -d traffic_power_tool"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -68,8 +77,6 @@ services:
   redis:
     image: redis:7-alpine
     container_name: traffic-redis
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
@@ -83,7 +90,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  mysql_data:
   redis_data:
 
 networks:

@@ -1,0 +1,35 @@
+FROM mcr.microsoft.com/playwright/python:v1.48.0-jammy
+
+WORKDIR /app
+
+# Install Python deps
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+  pip install --no-cache-dir -r requirements.txt && \
+  playwright install --with-deps
+
+# Copy source code
+COPY . .
+
+# Set env
+ENV PYTHONUNBUFFERED=1 \
+  PYTHONDONTWRITEBYTECODE=1 \
+  APP_ENV=production \
+  OUTPUT_DIR=/app/output \
+  LOGS_DIR=/app/logs
+
+# Buat folder dan permission
+RUN mkdir -p ${OUTPUT_DIR}/profiles ${LOGS_DIR} && \
+  chmod 755 ${OUTPUT_DIR} ${LOGS_DIR}
+
+# Jalankan sebagai non-root
+RUN groupadd -r appuser && useradd -r -g appuser appuser && \
+  chown -R appuser:appuser /app ${OUTPUT_DIR} ${LOGS_DIR}
+USER appuser
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "1", "--timeout", "120", "app:app"]

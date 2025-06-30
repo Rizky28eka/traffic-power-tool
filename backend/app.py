@@ -8,8 +8,8 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room
 import redis
-import psycopg2
-from psycopg2.extras import RealDictCursor
+import mysql.connector
+from mysql.connector import errorcode
 import json
 from datetime import datetime
 from contextlib import contextmanager
@@ -27,11 +27,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
 REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
 REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
-POSTGRES_HOST = os.environ.get('POSTGRES_HOST', 'postgres')
-POSTGRES_PORT = int(os.environ.get('POSTGRES_PORT', 5432))
-POSTGRES_DB = os.environ.get('POSTGRES_DB', 'traffic_power_tool')
-POSTGRES_USER = os.environ.get('POSTGRES_USER', 'traffic_user')
-POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'traffic_password')
+MYSQL_HOST = os.environ.get('MYSQL_HOST', 'mysql')
+MYSQL_PORT = int(os.environ.get('MYSQL_PORT', 3306))
+MYSQL_DB = os.environ.get('MYSQL_DB', 'traffic_power_tool')
+MYSQL_USER = os.environ.get('MYSQL_USER', 'traffic_user')
+MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'traffic_password')
 APP_ENV = os.environ.get('APP_ENV', 'development')
 OUTPUT_DIR = Path(os.environ.get('OUTPUT_DIR', '/app/output'))
 LOGS_DIR = Path(os.environ.get('LOGS_DIR', '/app/logs'))
@@ -68,26 +68,30 @@ except Exception as e:
     logger.error(f"Redis connection failed: {e}")
     redis_client = None
 
-# Initialize PostgreSQL connection
+# Initialize MySQL connection
 @contextmanager
 def get_db_connection():
     """Provide a transactional scope around a series of operations."""
     conn = None
     try:
-        conn = psycopg2.connect(
-            host=POSTGRES_HOST,
-            port=POSTGRES_PORT,
-            database=POSTGRES_DB,
-            user=POSTGRES_USER,
-            password=POSTGRES_PASSWORD,
-            cursor_factory=RealDictCursor
+        conn = mysql.connector.connect(
+            host=MYSQL_HOST,
+            port=MYSQL_PORT,
+            database=MYSQL_DB,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD
         )
         yield conn
-    except Exception as e:
-        logger.error(f"Database connection failed: {e}")
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            logger.error("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            logger.error("Database does not exist")
+        else:
+            logger.error(f"Database connection failed: {err}")
         raise
     finally:
-        if conn:
+        if conn and conn.is_connected():
             conn.close()
 
 # --- Core Application Imports ---
@@ -123,7 +127,7 @@ def run_simulation_in_background(simulation_id, config_data):
             active_simulations[simulation_id]['status'] = status
             
             with get_db_connection() as conn:
-                with conn.cursor() as cur:
+                with conn.cursor(dictionary=True) as cur:
                     cur.execute("UPDATE simulations SET status = %s, finished_at = %s, stats = %s WHERE id = %s",
                                 (status, datetime.utcnow(), json.dumps(generator.session_stats), simulation_id))
                     conn.commit()
@@ -138,7 +142,7 @@ def run_simulation_in_background(simulation_id, config_data):
             logger.error(f"Simulation {simulation_id} failed: {e}", exc_info=True)
             active_simulations[simulation_id]['status'] = 'failed'
             with get_db_connection() as conn:
-                with conn.cursor() as cur:
+                with conn.cursor(dictionary=True) as cur:
                     cur.execute("UPDATE simulations SET status = %s, finished_at = %s, error_message = %s WHERE id = %s",
                                 ('failed', datetime.utcnow(), str(e), simulation_id))
                     conn.commit()
@@ -167,12 +171,14 @@ def serve_static(path):
     except FileNotFoundError:
         return send_from_directory(app.static_folder, 'index.html')
 
-@app.route('/health')
+@app.route('/api/health')
 def health_check():
     """Health check endpoint for monitoring."""
+    db_ok = False
     try:
         with get_db_connection() as conn:
-            db_ok = conn is not None
+            if conn.is_connected():
+                db_ok = True
     except Exception:
         db_ok = False
         
@@ -181,7 +187,7 @@ def health_check():
         'timestamp': datetime.utcnow().isoformat(),
         'services': {
             'redis': 'connected' if redis_client and redis_client.ping() else 'disconnected',
-            'postgres': 'connected' if db_ok else 'disconnected'
+            'mysql': 'connected' if db_ok else 'disconnected'
         }
     }
     return jsonify(status)
@@ -283,11 +289,11 @@ def get_simulation_status(simulation_id):
             })
         else:
             with get_db_connection() as conn:
-                with conn.cursor() as cur:
+                with conn.cursor(dictionary=True) as cur:
                     cur.execute("SELECT id, status, created_at, finished_at, stats, error_message FROM simulations WHERE id = %s", (simulation_id,))
                     result = cur.fetchone()
                     if result:
-                        return jsonify({'success': True, 'data': dict(result)})
+                        return jsonify({'success': True, 'data': result})
             
             return jsonify({'success': False, 'error': 'Simulation not found'}), 404
             
