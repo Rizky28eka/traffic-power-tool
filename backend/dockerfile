@@ -3,13 +3,14 @@ FROM mcr.microsoft.com/playwright/python:v1.48.0-jammy
 WORKDIR /app
 
 # Install Python deps
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
   pip install --no-cache-dir -r requirements.txt && \
   playwright install --with-deps
 
 # Copy source code
-COPY . .
+COPY backend/app.py .
+COPY backend/src/ ./src/
 
 # Set env
 ENV PYTHONUNBUFFERED=1 \

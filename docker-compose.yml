@@ -17,11 +17,13 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
     container_name: traffic-frontend
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV:-production}
       - BACKEND_URL=http://backend:8000
     networks:
       - traffic_network
@@ -29,19 +31,11 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: traffic-backend
-    environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_DB=traffic_power_tool
-      - MYSQL_USER=traffic_user
-      - MYSQL_PASSWORD=traffic_password
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - SECRET_KEY=a-secure-and-random-secret-key-for-production
-      - APP_ENV=production
+    env_file:
+      - .env
     depends_on:
       mysql:
         condition: service_healthy
@@ -57,14 +51,11 @@ services:
   mysql:
     image: mysql:8.0
     container_name: traffic-mysql
-    environment:
-      - MYSQL_DATABASE=traffic_power_tool
-      - MYSQL_USER=traffic_user
-      - MYSQL_PASSWORD=traffic_password
-      - MYSQL_ROOT_PASSWORD=root_password
+    env_file:
+      - .env
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql/migrations:/docker-entrypoint-initdb.d
+      - ./database/migrations:/docker-entrypoint-initdb.d
     networks:
       - traffic_network
     healthcheck:
@@ -77,6 +68,8 @@ services:
   redis:
     image: redis:7-alpine
     container_name: traffic-redis
+    env_file:
+      - .env
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
